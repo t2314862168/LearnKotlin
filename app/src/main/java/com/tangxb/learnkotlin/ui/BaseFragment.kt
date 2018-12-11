@@ -57,13 +57,14 @@ abstract class BaseFragment : Fragment() {
     }
 
     private fun init() {
+        bindButterKnife()
         initView()
         initData()
         initListener()
     }
 
-     fun bindButterKnife() {
-        unbinder = ButterKnife.bind(mView!!)
+    fun bindButterKnife() {
+        unbinder = ButterKnife.bind(this, mView!!)
     }
 
     private fun unbindButterKnife() {
