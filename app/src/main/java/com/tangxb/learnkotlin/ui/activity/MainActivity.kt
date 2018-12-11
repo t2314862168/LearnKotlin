@@ -1,11 +1,11 @@
-package com.tangxb.learnkotlin.ui
+package com.tangxb.learnkotlin.ui.activity
 
 import android.support.v4.app.FragmentTransaction
 import com.tangxb.learnkotlin.R
 import com.orhanobut.logger.AndroidLogAdapter
 import com.orhanobut.logger.Logger
-import com.orhanobut.logger.Logger.addLogAdapter
-
+import com.tangxb.learnkotlin.ui.BaseActivity
+import com.tangxb.learnkotlin.ui.fragment.HomeFragment
 
 
 class MainActivity : BaseActivity() {
@@ -15,7 +15,7 @@ class MainActivity : BaseActivity() {
     lateinit var homeFragment: HomeFragment
 
     override fun initData() {
-        Logger.addLogAdapter(AndroidLogAdapter())
+
 
         transaction = supportFragmentManager.beginTransaction()
         if (supportFragmentManager.findFragmentByTag(HomeFragment.TAG) == null) {

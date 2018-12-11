@@ -6,6 +6,8 @@ import android.content.res.Resources
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.view.View
+import butterknife.ButterKnife
+import butterknife.Unbinder
 
 abstract class BaseActivity : AppCompatActivity() {
     var mLayoutResId: Int = 0
@@ -14,6 +16,7 @@ abstract class BaseActivity : AppCompatActivity() {
     var mResources: Resources? = null
     abstract fun getLayoutResId(): Int
     open fun getLayoutResView(): View? = null
+    var unbinder: Unbinder? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -33,6 +36,7 @@ abstract class BaseActivity : AppCompatActivity() {
         mClassName = javaClass.simpleName
         mActivity = this
         mResources = resources
+        bindButterKnife()
         receivePassData(intent)
         initView()
         initData()
@@ -51,4 +55,18 @@ abstract class BaseActivity : AppCompatActivity() {
 
     open fun initListener() {
     }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        unbindButterKnife()
+    }
+
+    private fun bindButterKnife() {
+        unbinder = ButterKnife.bind(this)
+    }
+
+    private fun unbindButterKnife() {
+        unbinder?.unbind()
+    }
+
 }

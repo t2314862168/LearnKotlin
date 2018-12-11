@@ -7,15 +7,27 @@ import android.support.v4.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import butterknife.ButterKnife
+import butterknife.Unbinder
+import com.tangxb.learnkotlin.MApplication
+import com.tangxb.learnkotlin.bean.BaseBean
+import com.tangxb.learnkotlin.util.RxSchedulers
+import io.reactivex.Observable
+import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.functions.Consumer
 
 abstract class BaseFragment : Fragment() {
+    abstract fun getLayoutResId(): Int
+    open fun getLayoutResView(): View? = null
+
     var mLayoutResId: Int = 0
     var mView: View? = null
     var mClassName: String? = null
     var mActivity: Activity? = null
+    var mApplication: MApplication? = null
     var mResources: Resources? = null
-    abstract fun getLayoutResId(): Int
-    open fun getLayoutResView(): View? = null
+    var compositeDisposable: CompositeDisposable? = null
+    var unbinder: Unbinder? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -26,6 +38,7 @@ abstract class BaseFragment : Fragment() {
         super.onActivityCreated(savedInstanceState)
         mClassName = javaClass.simpleName
         mActivity = activity
+        mApplication = activity!!.application as MApplication?
         mResources = resources
     }
 
@@ -49,6 +62,39 @@ abstract class BaseFragment : Fragment() {
         initListener()
     }
 
+     fun bindButterKnife() {
+        unbinder = ButterKnife.bind(mView!!)
+    }
+
+    private fun unbindButterKnife() {
+        unbinder?.unbind()
+    }
+
+    fun <T> addDisposableIoMain(observable: Observable<BaseBean<T>>, consumer: Consumer<BaseBean<T>>) {
+        if (compositeDisposable === null) {
+            compositeDisposable = CompositeDisposable()
+        }
+        val subscribe = observable.compose(RxSchedulers.ioToMain())
+                .onErrorReturn({ t ->
+                    val baseBean = BaseBean<T>()
+                    baseBean.throwable = t
+                    baseBean
+                })
+                .subscribe(consumer)
+        compositeDisposable?.add(subscribe)
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        compositeDisposable?.dispose()
+        compositeDisposable = null
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        unbindButterKnife()
+    }
+
     open fun receivePassData(savedInstanceState: Bundle?) {
 
     }
@@ -63,5 +109,21 @@ abstract class BaseFragment : Fragment() {
 
     open fun initListener() {
 
+    }
+
+    fun logD(obj: String) {
+        mApplication!!.logD(mClassName!!, obj)
+    }
+
+    fun logD(tag: String, obj: String) {
+        mApplication!!.logD(tag, obj)
+    }
+
+    fun logE(obj: String) {
+        mApplication!!.logE(mClassName!!, obj)
+    }
+
+    fun logE(tag: String, obj: String) {
+        mApplication!!.logE(tag, obj)
     }
 }

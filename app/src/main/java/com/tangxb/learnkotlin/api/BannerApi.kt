@@ -7,5 +7,5 @@ import retrofit2.http.GET
 
 interface BannerApi {
     @GET("banner/json")
-    fun getBanner(): Observable<BaseBean<BannerBean>>
+    fun getBanner(): Observable<BaseBean<List<BannerBean>>>
 }

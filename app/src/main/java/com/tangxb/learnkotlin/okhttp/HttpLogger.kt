@@ -1,5 +1,6 @@
 package com.tangxb.learnkotlin.okhttp
 
+import com.tangxb.learnkotlin.util.MLogUtils
 import okhttp3.logging.HttpLoggingInterceptor
 import java.lang.StringBuilder
 
@@ -27,7 +28,7 @@ class HttpLogger : HttpLoggingInterceptor.Logger {
             }
             // 请求或者响应结束，打印整条日志
             if (message.startsWith("<-- END HTTP")) {
-                MLogUtils.d(TAG, mMessage)
+                MLogUtils.loggerD(TAG, mMessage)
             }
         } catch (e: Exception) {
         }
