@@ -7,6 +7,8 @@ import android.support.v4.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import butterknife.ButterKnife
+import butterknife.Unbinder
 import com.tangxb.learnkotlin.MApplication
 import com.tangxb.learnkotlin.bean.BaseBean
 import com.tangxb.learnkotlin.util.RxSchedulers
@@ -25,6 +27,7 @@ abstract class BaseFragment : Fragment() {
     var mApplication: MApplication? = null
     var mResources: Resources? = null
     var compositeDisposable: CompositeDisposable? = null
+    var unbinder: Unbinder? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -59,6 +62,14 @@ abstract class BaseFragment : Fragment() {
         initListener()
     }
 
+     fun bindButterKnife() {
+        unbinder = ButterKnife.bind(mView!!)
+    }
+
+    private fun unbindButterKnife() {
+        unbinder?.unbind()
+    }
+
     fun <T> addDisposableIoMain(observable: Observable<BaseBean<T>>, consumer: Consumer<BaseBean<T>>) {
         if (compositeDisposable === null) {
             compositeDisposable = CompositeDisposable()
@@ -77,6 +88,11 @@ abstract class BaseFragment : Fragment() {
         super.onDestroy()
         compositeDisposable?.dispose()
         compositeDisposable = null
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        unbindButterKnife()
     }
 
     open fun receivePassData(savedInstanceState: Bundle?) {
