@@ -31,15 +31,11 @@ abstract class BaseFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        receivePassData(arguments)
-    }
-
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
         mClassName = javaClass.simpleName
         mActivity = activity
         mApplication = activity!!.application as MApplication?
         mResources = resources
+        receivePassData(arguments)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -63,7 +59,7 @@ abstract class BaseFragment : Fragment() {
         initListener()
     }
 
-    fun bindButterKnife() {
+    private fun bindButterKnife() {
         unbinder = ButterKnife.bind(this, mView!!)
     }
 

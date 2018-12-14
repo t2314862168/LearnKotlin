@@ -1,12 +1,12 @@
 package com.tangxb.learnkotlin.controller
 
 import com.tangxb.learnkotlin.RetrofitRxClient
-import com.tangxb.learnkotlin.api.BannerApi
+import com.tangxb.learnkotlin.api.HomeApi
 
 class HomeFragmentController {
-    private fun getBannerApi() = RetrofitRxClient.instance.retrofit.create(BannerApi::class.java)
+    private fun getHomeApi() = RetrofitRxClient.instance.retrofit.create(HomeApi::class.java)
 
-    fun getBanner() = getBannerApi().getBanner()
+    fun getBanner() = getHomeApi().getBanner()
 
-
+    fun getArticle(pageNum: Int) = getHomeApi().getArticle(pageNum)
 }
